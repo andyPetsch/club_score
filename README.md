@@ -1,4 +1,4 @@
-# Vereins_Scoreboard
+# Club Score
 
 Eine Flutter-App speziell für deutsche Poolbillardvereine, optimiert für Tablets im Querformat.
 
