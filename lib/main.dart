@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => GameController(),
       child: MaterialApp(
-        title: 'Flutter Stateful Billiards Counter',
+        title: 'Club Score - Die Scoreboard App für Poolvereine',
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
