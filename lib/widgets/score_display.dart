@@ -41,23 +41,6 @@ class ScoreDisplay extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Player name field
-              if (isBreaking) Icon(Icons.sports_cricket, color: Colors.blue),
-              TextField(
-                textAlign: TextAlign.center,
-                decoration: InputDecoration(
-                  hintText: 'Spieler ${playerIndex + 1}',
-                  border: OutlineInputBorder(),
-                ),
-                controller: TextEditingController(text: playerName),
-                onChanged: (value) => gameController.handleAction({
-                  'type': 'UPDATE_NAME',
-                  'player': playerIndex + 1,
-                  'name': value,
-                }),
-              ),
-              SizedBox(height: 20),
-
               // Score display
               Expanded(
                 child: Container(
@@ -80,6 +63,23 @@ class ScoreDisplay extends StatelessWidget {
                   ),
                 ),
               ),
+
+              // Player name field
+              if (isBreaking) Icon(Icons.sports_cricket, color: Colors.blue),
+              TextField(
+                textAlign: TextAlign.center,
+                decoration: InputDecoration(
+                  hintText: 'Spieler ${playerIndex + 1}',
+                  border: OutlineInputBorder(),
+                ),
+                controller: TextEditingController(text: playerName),
+                onChanged: (value) => gameController.handleAction({
+                  'type': 'UPDATE_NAME',
+                  'player': playerIndex + 1,
+                  'name': value,
+                }),
+              ),
+              SizedBox(height: 20),
             ],
           ),
         ),
