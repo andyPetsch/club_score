@@ -37,23 +37,6 @@ class GameScreen extends StatelessWidget {
                   ],
                 ),
               ),
-
-              // Bottom controls
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton.icon(
-                      icon: const Icon(Icons.undo),
-                      label: const Text('Undo'),
-                      onPressed: gameController.stateHistory.isEmpty
-                          ? null
-                          : () => gameController.handleAction({'type': 'UNDO'}),
-                    ),
-                  ],
-                ),
-              ),
             ],
           ),
 
