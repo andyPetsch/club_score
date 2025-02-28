@@ -26,7 +26,8 @@ class _PoolGameModalState extends State<PoolGameModal> {
   @override
   void initState() {
     super.initState();
-    selectedGameType = widget.initialGameType;
+    selectedGameType = widget.initialGameType ??
+        '8ball'; // Default to 8ball if no initial type
   }
 
   @override
@@ -213,12 +214,35 @@ class _PoolGameModalState extends State<PoolGameModal> {
         ballNumber = 8;
     }
 
-    return Column(
-      children: [
-        BilliardsSVG.getBall(ballNumber, size: 60),
-        const SizedBox(height: 8),
-        Text('$ballNumber-Ball'),
-      ],
+    final isSelected = selectedGameType == gameType;
+
+    return InkWell(
+      onTap: () {
+        setState(() {
+          selectedGameType = gameType;
+        });
+      },
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: isSelected ? Colors.blue : Colors.grey.shade300,
+            width: 3,
+          ),
+          borderRadius: BorderRadius.circular(8),
+          color: isSelected ? Colors.blue.withOpacity(0.1) : Colors.white,
+        ),
+        child: Column(
+          children: [
+            BilliardsSVG.getBall(ballNumber, size: 60),
+            const SizedBox(height: 8),
+            Text(
+              '$ballNumber-Ball',
+              style: const TextStyle(fontSize: 16),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
