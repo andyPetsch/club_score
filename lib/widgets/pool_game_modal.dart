@@ -1,5 +1,6 @@
 // lib/widgets/pool_game_modal.dart
 import 'package:flutter/material.dart';
+import '../utils/svg_provider.dart';
 
 class PoolGameModal extends StatefulWidget {
   final Function(String gameType, int raceToWin, String breakType) onGameStart;
@@ -92,9 +93,9 @@ class _PoolGameModalState extends State<PoolGameModal> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          _buildGameOption('8ball', '8-Ball'),
-                          _buildGameOption('9ball', '9-Ball'),
-                          _buildGameOption('10ball', '10-Ball'),
+                          _buildGameOption(context, '8ball'),
+                          _buildGameOption(context, '9ball'),
+                          _buildGameOption(context, '10ball'),
                         ],
                       ),
                       const SizedBox(height: 30),
@@ -196,35 +197,28 @@ class _PoolGameModalState extends State<PoolGameModal> {
     );
   }
 
-  Widget _buildGameOption(String type, String label) {
-    final isSelected = selectedGameType == type;
+  Widget _buildGameOption(BuildContext context, String gameType) {
+    int ballNumber;
+    switch (gameType) {
+      case '8ball':
+        ballNumber = 8;
+        break;
+      case '9ball':
+        ballNumber = 9;
+        break;
+      case '10ball':
+        ballNumber = 10;
+        break;
+      default:
+        ballNumber = 8;
+    }
 
-    return InkWell(
-      onTap: () {
-        setState(() {
-          selectedGameType = type;
-        });
-      },
-      child: Container(
-        width: 150,
-        height: 100,
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: isSelected ? Colors.blue : Colors.grey.shade300,
-            width: 3,
-          ),
-          borderRadius: BorderRadius.circular(12),
-          color: isSelected ? Colors.blue.withOpacity(0.1) : Colors.white,
-        ),
-        child: Center(
-          child: Text(
-            label,
-            style: const TextStyle(fontSize: 24),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ),
+    return Column(
+      children: [
+        BilliardsSVG.getBall(ballNumber, size: 60),
+        const SizedBox(height: 8),
+        Text('$ballNumber-Ball'),
+      ],
     );
   }
 
