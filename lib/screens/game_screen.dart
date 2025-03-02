@@ -6,6 +6,7 @@ import '../widgets/score_display.dart';
 import '../widgets/win_screen.dart';
 import '../widgets/game_selection_modal.dart';
 import '../widgets/pool_game_modal.dart';
+import '../widgets/floating_control_panel.dart';
 
 class GameScreen extends StatelessWidget {
   const GameScreen({Key? key}) : super(key: key);
@@ -37,23 +38,6 @@ class GameScreen extends StatelessWidget {
                   ],
                 ),
               ),
-
-              // Bottom controls
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton.icon(
-                      icon: const Icon(Icons.undo),
-                      label: const Text('Undo'),
-                      onPressed: gameController.stateHistory.isEmpty
-                          ? null
-                          : () => gameController.handleAction({'type': 'UNDO'}),
-                    ),
-                  ],
-                ),
-              ),
             ],
           ),
 
@@ -65,6 +49,9 @@ class GameScreen extends StatelessWidget {
                 _showNewGameDialog(context, gameController);
               },
             ),
+
+          // Centered floating control panel
+          FloatingControlPanel(),
         ],
       ),
     );
