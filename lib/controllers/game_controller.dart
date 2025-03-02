@@ -13,14 +13,14 @@ class GameController extends ChangeNotifier {
   }
 
   void handleAction(Map<String, dynamic> action) {
-    // Save current state before modification
-    stateHistory.add(state.clone());
-
     // Set state context for game logic
     gameLogic.setStateContext(state);
 
     switch (action['type']) {
       case 'SCORE':
+        // Populate state history with unmodified state for undo
+        stateHistory.add(state.clone());
+
         int player = action['player'];
         if (state.scores[player - 1] < state.raceToWin) {
           gameLogic.increaseScore(player);
@@ -38,11 +38,16 @@ class GameController extends ChangeNotifier {
         if (stateHistory.isNotEmpty) {
           state = stateHistory.removeLast();
           gameLogic.setStateContext(state);
+          print('Restored scores: ${state.scores}');
         }
         break;
     }
 
     notifyListeners();
+  }
+
+  bool canUndo() {
+    return stateHistory.isNotEmpty;
   }
 
   void handleNewGame(Map<String, dynamic> config) {

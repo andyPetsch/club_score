@@ -67,16 +67,23 @@ class FloatingControlPanel extends StatelessWidget {
             clipBehavior: Clip.antiAlias,
             color: Colors.white,
             child: InkWell(
-              onTap: () {
-                // Will be implemented later
-                print('Undo button tapped');
-              },
+              onTap: gameController.canUndo()
+                  ? () {
+                      print(
+                          'Undo button tapped. Can undo: ${gameController.canUndo()}');
+                      print(
+                          'State history length: ${gameController.stateHistory.length}');
+                      gameController.handleAction({'type': 'UNDO'});
+                    }
+                  : null, // Disable the button if no undo is possible
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Icon(
                   Icons.undo_rounded,
                   size: 30,
-                  color: Theme.of(context).primaryColor,
+                  color: gameController.canUndo()
+                      ? Theme.of(context).primaryColor
+                      : Colors.grey, // Gray out when undo is not possible
                 ),
               ),
             ),
