@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../controllers/game_controller.dart';
 import '../theme/app_themes.dart';
 
-class ScoreDisplay extends StatelessWidget {
+class ScoreDisplay extends StatefulWidget {
   final int playerIndex;
   final bool isActive;
   final bool isBreaking;
@@ -17,11 +17,36 @@ class ScoreDisplay extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  _ScoreDisplayState createState() => _ScoreDisplayState();
+}
+
+class _ScoreDisplayState extends State<ScoreDisplay> {
+  late TextEditingController _nameController;
+
+  @override
+  void initState() {
+    super.initState();
+    final gameController = Provider.of<GameController>(context, listen: false);
+    final playerName = gameController.state.playerNames[widget.playerIndex];
+
+    _nameController = TextEditingController(text: playerName);
+
+    // Select all text when controller is created
+    _nameController.selection =
+        TextSelection(baseOffset: 0, extentOffset: _nameController.text.length);
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final gameController = Provider.of<GameController>(context);
     final state = gameController.state;
-    final int displayedScore = state.scores[playerIndex];
-    final String playerName = state.playerNames[playerIndex];
+    final int displayedScore = state.scores[widget.playerIndex];
 
     // Benutzerdefinierte Theme-Erweiterung abrufen
     final themeExt = Theme.of(context).extension<BilliardsThemeExtension>();
@@ -32,12 +57,12 @@ class ScoreDisplay extends StatelessWidget {
       child: GestureDetector(
         onTap: () => gameController.handleAction({
           'type': 'SCORE',
-          'player': playerIndex + 1,
+          'player': widget.playerIndex + 1,
         }),
         child: Container(
           decoration: BoxDecoration(
             color: cardBackground,
-            border: (isActive && state.gameType == '141')
+            border: (widget.isActive && state.gameType == '141')
                 ? Border.all(color: Colors.blue, width: 3.0)
                 : null,
             borderRadius: BorderRadius.circular(8),
@@ -60,10 +85,8 @@ class ScoreDisplay extends StatelessWidget {
                     child: LayoutBuilder(
                       builder: (context, constraints) {
                         return Container(
-                          height: constraints.maxHeight *
-                              0.7, // 70% der verfügbaren Höhe
-                          width: constraints.maxWidth *
-                              0.8, // 80% der verfügbaren Breite
+                          height: constraints.maxHeight * 0.7,
+                          width: constraints.maxWidth * 0.8,
                           child: FittedBox(
                             fit: BoxFit.contain,
                             child: Text(
@@ -90,7 +113,7 @@ class ScoreDisplay extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  if (isBreaking)
+                  if (widget.isBreaking)
                     Padding(
                       padding: const EdgeInsets.only(right: 8.0),
                       child: Icon(Icons.sports_cricket,
@@ -98,13 +121,14 @@ class ScoreDisplay extends StatelessWidget {
                     ),
                   Expanded(
                     child: TextField(
+                      controller: _nameController,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 20,
                         color: Theme.of(context).textTheme.bodyLarge?.color,
                       ),
                       decoration: InputDecoration(
-                        hintText: 'Spieler ${playerIndex + 1}',
+                        hintText: 'Spieler ${widget.playerIndex + 1}',
                         hintStyle: TextStyle(
                           fontSize: 20,
                           color: Theme.of(context).hintColor,
@@ -113,10 +137,14 @@ class ScoreDisplay extends StatelessWidget {
                         contentPadding: const EdgeInsets.symmetric(
                             vertical: 16, horizontal: 12),
                       ),
-                      controller: TextEditingController(text: playerName),
+                      onTap: () {
+                        _nameController.selection = TextSelection(
+                            baseOffset: 0,
+                            extentOffset: _nameController.text.length);
+                      },
                       onChanged: (value) => gameController.handleAction({
                         'type': 'UPDATE_NAME',
-                        'player': playerIndex + 1,
+                        'player': widget.playerIndex + 1,
                         'name': value,
                       }),
                     ),
