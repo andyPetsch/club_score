@@ -5,6 +5,7 @@ import '../controllers/game_controller.dart';
 import '../utils/svg_provider.dart';
 import '../widgets/game_selection_modal.dart';
 import '../widgets/pool_game_modal.dart';
+import '../theme/theme_provider.dart';
 
 class FloatingControlPanel extends StatelessWidget {
   const FloatingControlPanel({Key? key}) : super(key: key);
@@ -79,6 +80,17 @@ class FloatingControlPanel extends StatelessWidget {
               ),
             ),
           ),
+
+          IconButton(
+            icon: Icon(
+              Provider.of<ThemeProvider>(context).isDarkMode
+                  ? Icons.light_mode
+                  : Icons.dark_mode,
+            ),
+            onPressed: () {
+              Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
+            },
+          )
         ],
       ),
     );
