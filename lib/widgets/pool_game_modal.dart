@@ -1,6 +1,7 @@
 // lib/widgets/pool_game_modal.dart
 import 'package:flutter/material.dart';
 import '../utils/svg_provider.dart';
+import '../theme/app_themes.dart';
 
 class PoolGameModal extends StatefulWidget {
   final Function(String gameType, int raceToWin, String breakType) onGameStart;
@@ -32,13 +33,24 @@ class _PoolGameModalState extends State<PoolGameModal> {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final ColorScheme colorScheme = theme.colorScheme;
+    final Color primaryColor = theme.primaryColor;
+    final Color backgroundColor = theme.cardColor;
+    final Color textColor = theme.textTheme.bodyLarge?.color ?? Colors.black;
+    final Color disabledColor = theme.disabledColor;
+
+    // Get billiards theme extension
+    final themeExt = theme.extension<BilliardsThemeExtension>();
+    final Color cardColor = themeExt?.playerCardColor ?? backgroundColor;
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Center(
         child: Container(
           width: 650,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: backgroundColor,
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
@@ -54,25 +66,29 @@ class _PoolGameModalState extends State<PoolGameModal> {
               // Header
               Container(
                 padding: const EdgeInsets.all(24),
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   border: Border(
-                    bottom: BorderSide(color: Colors.black12, width: 1),
+                    bottom: BorderSide(color: theme.dividerColor, width: 1),
                   ),
                 ),
                 child: ElevatedButton(
                   onPressed: _canStartGame() ? _startGame : null,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    disabledBackgroundColor: Colors.grey.shade400,
-                    foregroundColor: Colors.white,
+                    backgroundColor: primaryColor,
+                    disabledBackgroundColor: disabledColor,
+                    foregroundColor: colorScheme.onPrimary,
                     minimumSize: const Size.fromHeight(65),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  child: const Text(
+                  child: Text(
                     'Spiel starten',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: colorScheme.onPrimary,
+                    ),
                   ),
                 ),
               ),
@@ -84,9 +100,9 @@ class _PoolGameModalState extends State<PoolGameModal> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      Text(
                         'Spielart wählen',
-                        style: TextStyle(fontSize: 22),
+                        style: TextStyle(fontSize: 22, color: textColor),
                       ),
                       const SizedBox(height: 18),
 
@@ -101,9 +117,9 @@ class _PoolGameModalState extends State<PoolGameModal> {
                       ),
                       const SizedBox(height: 30),
 
-                      const Text(
+                      Text(
                         'Match bis ...',
-                        style: TextStyle(fontSize: 22),
+                        style: TextStyle(fontSize: 22, color: textColor),
                       ),
                       const SizedBox(height: 18),
 
@@ -127,13 +143,15 @@ class _PoolGameModalState extends State<PoolGameModal> {
                             width: double.infinity,
                             child: TextField(
                               keyboardType: TextInputType.number,
-                              style: const TextStyle(fontSize: 22),
-                              decoration: const InputDecoration(
+                              style: TextStyle(fontSize: 22, color: textColor),
+                              decoration: InputDecoration(
                                 border: OutlineInputBorder(),
                                 contentPadding: EdgeInsets.all(20),
                                 hintText: '1-99',
                                 labelText: 'Benutzerdefiniert',
                                 labelStyle: TextStyle(fontSize: 20),
+                                fillColor: cardColor,
+                                filled: true,
                               ),
                               onChanged: (value) {
                                 if (value.isNotEmpty) {
@@ -168,9 +186,9 @@ class _PoolGameModalState extends State<PoolGameModal> {
                         ),
                       const SizedBox(height: 30),
 
-                      const Text(
+                      Text(
                         'Breakart',
-                        style: TextStyle(fontSize: 22),
+                        style: TextStyle(fontSize: 22, color: textColor),
                       ),
                       const SizedBox(height: 18),
 
@@ -199,6 +217,12 @@ class _PoolGameModalState extends State<PoolGameModal> {
   }
 
   Widget _buildGameOption(BuildContext context, String gameType) {
+    final ThemeData theme = Theme.of(context);
+    final Color primaryColor = theme.primaryColor;
+    final Color textColor = theme.textTheme.bodyLarge?.color ?? Colors.black;
+    final Color cardColor = theme.cardColor;
+    final Color borderColor = theme.dividerColor;
+
     int ballNumber;
     switch (gameType) {
       case '8ball':
@@ -226,11 +250,11 @@ class _PoolGameModalState extends State<PoolGameModal> {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           border: Border.all(
-            color: isSelected ? Colors.blue : Colors.grey.shade300,
+            color: isSelected ? primaryColor : borderColor,
             width: 3,
           ),
           borderRadius: BorderRadius.circular(8),
-          color: isSelected ? Colors.blue.withOpacity(0.1) : Colors.white,
+          color: isSelected ? primaryColor.withOpacity(0.1) : cardColor,
         ),
         child: Column(
           children: [
@@ -238,7 +262,7 @@ class _PoolGameModalState extends State<PoolGameModal> {
             const SizedBox(height: 8),
             Text(
               '$ballNumber-Ball',
-              style: const TextStyle(fontSize: 16),
+              style: TextStyle(fontSize: 16, color: textColor),
             ),
           ],
         ),
@@ -247,6 +271,12 @@ class _PoolGameModalState extends State<PoolGameModal> {
   }
 
   Widget _buildRaceButton(int? race) {
+    final ThemeData theme = Theme.of(context);
+    final Color primaryColor = theme.primaryColor;
+    final Color textColor = theme.textTheme.bodyLarge?.color ?? Colors.black;
+    final Color cardColor = theme.cardColor;
+    final Color borderColor = theme.dividerColor;
+
     final isSelected = race == selectedRace || (race == null && showCustomRace);
     final isCustom = race == null;
 
@@ -263,13 +293,12 @@ class _PoolGameModalState extends State<PoolGameModal> {
         });
       },
       style: ElevatedButton.styleFrom(
-        backgroundColor:
-            isSelected ? Colors.blue.withOpacity(0.1) : Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: isSelected ? primaryColor.withOpacity(0.1) : cardColor,
+        foregroundColor: textColor,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         minimumSize: const Size(70, 70),
         side: BorderSide(
-          color: isSelected ? Colors.blue : Colors.grey.shade300,
+          color: isSelected ? primaryColor : borderColor,
           width: 3,
         ),
         elevation: 0,
@@ -279,12 +308,18 @@ class _PoolGameModalState extends State<PoolGameModal> {
       ),
       child: Text(
         isCustom ? 'Benutzerdefiniert' : race.toString(),
-        style: const TextStyle(fontSize: 24),
+        style: TextStyle(fontSize: 24, color: textColor),
       ),
     );
   }
 
   Widget _buildBreakButton(String breakType, String label) {
+    final ThemeData theme = Theme.of(context);
+    final Color primaryColor = theme.primaryColor;
+    final Color textColor = theme.textTheme.bodyLarge?.color ?? Colors.black;
+    final Color cardColor = theme.cardColor;
+    final Color borderColor = theme.dividerColor;
+
     final isSelected = selectedBreak == breakType;
 
     return ElevatedButton(
@@ -294,13 +329,12 @@ class _PoolGameModalState extends State<PoolGameModal> {
         });
       },
       style: ElevatedButton.styleFrom(
-        backgroundColor:
-            isSelected ? Colors.blue.withOpacity(0.1) : Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: isSelected ? primaryColor.withOpacity(0.1) : cardColor,
+        foregroundColor: textColor,
         padding: const EdgeInsets.symmetric(vertical: 18),
         minimumSize: const Size(0, 80),
         side: BorderSide(
-          color: isSelected ? Colors.blue : Colors.grey.shade300,
+          color: isSelected ? primaryColor : borderColor,
           width: 3,
         ),
         elevation: 0,
@@ -310,7 +344,7 @@ class _PoolGameModalState extends State<PoolGameModal> {
       ),
       child: Text(
         label,
-        style: const TextStyle(fontSize: 24),
+        style: TextStyle(fontSize: 24, color: textColor),
       ),
     );
   }
