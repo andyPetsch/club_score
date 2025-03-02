@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../utils/svg_provider.dart';
 import '../theme/app_themes.dart';
 
+const String CUSTOM_RACE = 'custom';
+
 class PoolGameModal extends StatefulWidget {
   final Function(String gameType, int raceToWin, String breakType) onGameStart;
   final String? initialGameType;
@@ -27,8 +29,9 @@ class _PoolGameModalState extends State<PoolGameModal> {
   @override
   void initState() {
     super.initState();
-    selectedGameType = widget.initialGameType ??
-        '8ball'; // Default to 8ball if no initial type
+    selectedGameType = widget.initialGameType;
+    selectedRace = null;
+    selectedBreak = null;
   }
 
   @override
@@ -130,7 +133,7 @@ class _PoolGameModalState extends State<PoolGameModal> {
                         children: [
                           for (int race in [4, 5, 6, 7, 8, 9, 10])
                             _buildRaceButton(race),
-                          _buildRaceButton(null),
+                          _buildRaceButton(CUSTOM_RACE),
                         ],
                       ),
                       const SizedBox(height: 14),
@@ -282,7 +285,7 @@ class _PoolGameModalState extends State<PoolGameModal> {
     );
   }
 
-  Widget _buildRaceButton(int? race) {
+  Widget _buildRaceButton(dynamic race) {
     final ThemeData theme = Theme.of(context);
     final Color primaryColor = theme.primaryColor;
     final Color textColor = theme.textTheme.bodyLarge?.color ?? Colors.black;
@@ -292,8 +295,8 @@ class _PoolGameModalState extends State<PoolGameModal> {
     // Get billiards theme extension
     final themeExt = theme.extension<BilliardsThemeExtension>();
 
-    final isSelected = race == selectedRace || (race == null && showCustomRace);
-    final isCustom = race == null;
+    final isCustom = race == CUSTOM_RACE;
+    final isSelected = race == selectedRace || (isCustom && showCustomRace);
 
     return ElevatedButton(
       onPressed: () {

@@ -57,6 +57,7 @@ class FloatingControlPanel extends StatelessWidget {
               ),
             ),
           ),
+
           const SizedBox(height: 16),
 
           // Undo button - smaller circular button
@@ -66,30 +67,52 @@ class FloatingControlPanel extends StatelessWidget {
             clipBehavior: Clip.antiAlias,
             color: Colors.white,
             child: InkWell(
-              onTap: () {
-                // Will be implemented later
-                print('Undo button tapped');
-              },
+              onTap: gameController.canUndo()
+                  ? () {
+                      print(
+                          'Undo button tapped. Can undo: ${gameController.canUndo()}');
+                      print(
+                          'State history length: ${gameController.stateHistory.length}');
+                      gameController.handleAction({'type': 'UNDO'});
+                    }
+                  : null, // Disable the button if no undo is possible
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Icon(
                   Icons.undo_rounded,
                   size: 30,
-                  color: Theme.of(context).primaryColor,
+                  color: gameController.canUndo()
+                      ? Theme.of(context).primaryColor
+                      : Colors.grey, // Gray out when undo is not possible
                 ),
               ),
             ),
           ),
 
-          IconButton(
-            icon: Icon(
-              Provider.of<ThemeProvider>(context).isDarkMode
-                  ? Icons.light_mode
-                  : Icons.dark_mode,
+          const SizedBox(height: 16),
+
+          // Replace the existing IconButton with this:
+          Material(
+            elevation: 4,
+            shape: const CircleBorder(),
+            clipBehavior: Clip.antiAlias,
+            color: Colors.white,
+            child: InkWell(
+              onTap: () {
+                Provider.of<ThemeProvider>(context, listen: false)
+                    .toggleTheme();
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Icon(
+                  Provider.of<ThemeProvider>(context).isDarkMode
+                      ? Icons.light_mode
+                      : Icons.dark_mode,
+                  size: 30,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
             ),
-            onPressed: () {
-              Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
-            },
           )
         ],
       ),
