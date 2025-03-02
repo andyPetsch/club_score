@@ -38,6 +38,8 @@ class AppThemes {
       BilliardsThemeExtension(
         scoreBackgroundColor: lightScoreBackground,
         playerCardColor: lightSurface,
+        selectedItemBackground: Colors.blue.withOpacity(0.2),
+        selectedItemBorder: Colors.blue,
       ),
     ],
   );
@@ -69,6 +71,8 @@ class AppThemes {
       BilliardsThemeExtension(
         scoreBackgroundColor: darkScoreBackground,
         playerCardColor: darkSurface,
+        selectedItemBackground: Colors.blue.withOpacity(0.2),
+        selectedItemBorder: Colors.blue,
       ),
     ],
   );
@@ -78,20 +82,29 @@ class AppThemes {
 class BilliardsThemeExtension extends ThemeExtension<BilliardsThemeExtension> {
   final Color scoreBackgroundColor;
   final Color playerCardColor;
+  final Color selectedItemBackground;
+  final Color selectedItemBorder;
 
   BilliardsThemeExtension({
     required this.scoreBackgroundColor,
     required this.playerCardColor,
+    required this.selectedItemBackground,
+    required this.selectedItemBorder,
   });
 
   @override
   ThemeExtension<BilliardsThemeExtension> copyWith({
     Color? scoreBackgroundColor,
     Color? playerCardColor,
+    Color? selectedItemBackground,
+    Color? selectedItemBorder,
   }) {
     return BilliardsThemeExtension(
       scoreBackgroundColor: scoreBackgroundColor ?? this.scoreBackgroundColor,
       playerCardColor: playerCardColor ?? this.playerCardColor,
+      selectedItemBackground:
+          selectedItemBackground ?? this.selectedItemBackground,
+      selectedItemBorder: selectedItemBorder ?? this.selectedItemBorder,
     );
   }
 
@@ -112,6 +125,16 @@ class BilliardsThemeExtension extends ThemeExtension<BilliardsThemeExtension> {
       playerCardColor: Color.lerp(
         playerCardColor,
         other.playerCardColor,
+        t,
+      )!,
+      selectedItemBackground: Color.lerp(
+        selectedItemBackground,
+        other.selectedItemBackground,
+        t,
+      )!,
+      selectedItemBorder: Color.lerp(
+        selectedItemBorder,
+        other.selectedItemBorder,
         t,
       )!,
     );
