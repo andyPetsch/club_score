@@ -57,6 +57,7 @@ class FloatingControlPanel extends StatelessWidget {
               ),
             ),
           ),
+
           const SizedBox(height: 16),
 
           // Undo button - smaller circular button
@@ -81,15 +82,30 @@ class FloatingControlPanel extends StatelessWidget {
             ),
           ),
 
-          IconButton(
-            icon: Icon(
-              Provider.of<ThemeProvider>(context).isDarkMode
-                  ? Icons.light_mode
-                  : Icons.dark_mode,
+          const SizedBox(height: 16),
+
+          // Replace the existing IconButton with this:
+          Material(
+            elevation: 4,
+            shape: const CircleBorder(),
+            clipBehavior: Clip.antiAlias,
+            color: Colors.white,
+            child: InkWell(
+              onTap: () {
+                Provider.of<ThemeProvider>(context, listen: false)
+                    .toggleTheme();
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Icon(
+                  Provider.of<ThemeProvider>(context).isDarkMode
+                      ? Icons.light_mode
+                      : Icons.dark_mode,
+                  size: 30,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
             ),
-            onPressed: () {
-              Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
-            },
           )
         ],
       ),
