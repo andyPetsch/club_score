@@ -30,11 +30,6 @@ class WinScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
                 softWrap: true,
               ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: onDismiss,
-                child: Text('Neues Spiel'),
-              ),
             ],
           ),
         ),

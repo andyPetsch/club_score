@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../controllers/game_controller.dart';
 import '../utils/svg_provider.dart';
+import '../widgets/game_selection_modal.dart';
+import '../widgets/pool_game_modal.dart';
 
 class FloatingControlPanel extends StatelessWidget {
   const FloatingControlPanel({Key? key}) : super(key: key);
@@ -46,8 +48,7 @@ class FloatingControlPanel extends StatelessWidget {
             color: Colors.white,
             child: InkWell(
               onTap: () {
-                // Will be implemented later
-                print('Game ball tapped: ${state.gameType}');
+                _showGameSelectionModal(context, gameController);
               },
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
@@ -80,6 +81,51 @@ class FloatingControlPanel extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  // Method to show game selection modal
+  void _showGameSelectionModal(
+      BuildContext context, GameController gameController) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return GameSelectionModal(
+          onGameSelected: (gameType) {
+            Navigator.of(context).pop(); // Close the dialog
+            if (gameType == 'pool') {
+              _showPoolGameModal(context, gameController);
+            } else if (gameType == '141') {
+              // to be implemented: _showStraightPoolModal(context);
+            }
+          },
+        );
+      },
+    );
+  }
+
+  // Method to show pool game modal
+  void _showPoolGameModal(BuildContext context, GameController gameController) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return Dialog(
+          insetPadding: const EdgeInsets.all(10),
+          backgroundColor: Colors.transparent,
+          child: PoolGameModal(
+            onGameStart: (gameType, raceToWin, breakType) {
+              // Handle game start
+              gameController.handleNewGame({
+                'gameType': gameType,
+                'raceToWin': raceToWin,
+                'breakType': breakType
+              });
+              Navigator.of(context).pop();
+            },
+          ),
+        );
+      },
     );
   }
 }

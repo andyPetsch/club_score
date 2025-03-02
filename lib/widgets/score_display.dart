@@ -64,6 +64,8 @@ class ScoreDisplay extends StatelessWidget {
                 ),
               ),
 
+              SizedBox(height: 20),
+
               // Player name field
               if (isBreaking) Icon(Icons.sports_cricket, color: Colors.blue),
               TextField(
@@ -79,7 +81,6 @@ class ScoreDisplay extends StatelessWidget {
                   'name': value,
                 }),
               ),
-              SizedBox(height: 20),
             ],
           ),
         ),
