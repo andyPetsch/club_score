@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../controllers/game_controller.dart';
+import '../theme/app_themes.dart';
 
 class ScoreDisplay extends StatelessWidget {
   final int playerIndex;
@@ -22,6 +23,11 @@ class ScoreDisplay extends StatelessWidget {
     final int displayedScore = state.scores[playerIndex];
     final String playerName = state.playerNames[playerIndex];
 
+    // Benutzerdefinierte Theme-Erweiterung abrufen
+    final themeExt = Theme.of(context).extension<BilliardsThemeExtension>();
+    final scoreBackground = themeExt?.scoreBackgroundColor ?? Colors.grey[200]!;
+    final cardBackground = themeExt?.playerCardColor ?? Colors.white;
+
     return Expanded(
       child: GestureDetector(
         onTap: () => gameController.handleAction({
@@ -30,56 +36,92 @@ class ScoreDisplay extends StatelessWidget {
         }),
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: cardBackground,
             border: (isActive && state.gameType == '141')
                 ? Border.all(color: Colors.blue, width: 3.0)
-                : null, // No border when inactive
+                : null,
             borderRadius: BorderRadius.circular(8),
           ),
-          padding: EdgeInsets.all(16),
-          margin: EdgeInsets.all(8),
+          padding: const EdgeInsets.all(16),
+          margin: const EdgeInsets.all(8),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Score display
+              // Score-Anzeige
               Expanded(
                 child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade200,
+                    color: scoreBackground,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        '$displayedScore',
-                        style: TextStyle(
-                          fontSize: 80,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
+                  child: Center(
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        return Container(
+                          height: constraints.maxHeight *
+                              0.7, // 70% der verfügbaren Höhe
+                          width: constraints.maxWidth *
+                              0.8, // 80% der verfügbaren Breite
+                          child: FittedBox(
+                            fit: BoxFit.contain,
+                            child: Text(
+                              '$displayedScore',
+                              style: TextStyle(
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge
+                                    ?.color,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
 
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
 
-              // Player name field
-              if (isBreaking) Icon(Icons.sports_cricket, color: Colors.blue),
-              TextField(
-                textAlign: TextAlign.center,
-                decoration: InputDecoration(
-                  hintText: 'Spieler ${playerIndex + 1}',
-                  border: OutlineInputBorder(),
-                ),
-                controller: TextEditingController(text: playerName),
-                onChanged: (value) => gameController.handleAction({
-                  'type': 'UPDATE_NAME',
-                  'player': playerIndex + 1,
-                  'name': value,
-                }),
+              // Spielername mit Break-Indikator
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (isBreaking)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: Icon(Icons.sports_cricket,
+                          color: Colors.blue, size: 28),
+                    ),
+                  Expanded(
+                    child: TextField(
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Theme.of(context).textTheme.bodyLarge?.color,
+                      ),
+                      decoration: InputDecoration(
+                        hintText: 'Spieler ${playerIndex + 1}',
+                        hintStyle: TextStyle(
+                          fontSize: 20,
+                          color: Theme.of(context).hintColor,
+                        ),
+                        border: const OutlineInputBorder(),
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 16, horizontal: 12),
+                      ),
+                      controller: TextEditingController(text: playerName),
+                      onChanged: (value) => gameController.handleAction({
+                        'type': 'UPDATE_NAME',
+                        'player': playerIndex + 1,
+                        'name': value,
+                      }),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
