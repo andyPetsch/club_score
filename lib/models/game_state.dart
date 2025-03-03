@@ -8,9 +8,13 @@ class GameState {
   int activePlayer;
   String gameType;
   int raceToWin;
-  List<int> consecutiveFouls; // Track fouls for each player
-  List<int> innings; // Track innings for each player
-  List<int> highestBreaks; // Track highest breaks for each player
+  List<int> consecutiveFouls;
+  List<int> innings;
+  List<int> highestBreaks;
+  String? selectedAssociation;
+  String? selectedLeagueId;
+  String? homeTeamId;
+  String? awayTeamId;
 
   GameState({
     required this.playerNames,
@@ -24,6 +28,10 @@ class GameState {
     this.consecutiveFouls = const [0, 0],
     this.innings = const [0, 0],
     this.highestBreaks = const [0, 0],
+    this.selectedAssociation,
+    this.selectedLeagueId,
+    this.homeTeamId,
+    this.awayTeamId,
   });
 
   // Create a default state
@@ -54,6 +62,10 @@ class GameState {
       consecutiveFouls: List.from(consecutiveFouls),
       innings: List.from(innings),
       highestBreaks: List.from(highestBreaks),
+      selectedAssociation: selectedAssociation,
+      selectedLeagueId: selectedLeagueId,
+      homeTeamId: homeTeamId,
+      awayTeamId: awayTeamId,
     );
   }
 }

@@ -2,10 +2,12 @@
 import 'package:flutter/material.dart';
 import '../models/game_state.dart';
 import '../models/pool_game_logic.dart';
+import '../services/league_service.dart';
 
 class GameController extends ChangeNotifier {
   GameState state = GameState.defaultState();
   final PoolGameLogic gameLogic = PoolGameLogic();
+  final LeagueService leagueService = LeagueService();
   List<GameState> stateHistory = [];
 
   GameController() {
@@ -64,6 +66,47 @@ class GameController extends ChangeNotifier {
 
     stateHistory = [];
     gameLogic.setStateContext(state);
+    notifyListeners();
+  }
+
+  Future<void> setAssociation(String association) async {
+    state.selectedAssociation = association;
+    state.selectedLeagueId = null;
+    state.homeTeamId = null;
+    state.awayTeamId = null;
+    await leagueService.saveSelection(
+      association: association,
+      leagueId: '',
+    );
+    notifyListeners();
+  }
+
+  Future<void> setLeague(String leagueId) async {
+    state.selectedLeagueId = leagueId;
+    await leagueService.saveSelection(
+      association: state.selectedAssociation!,
+      leagueId: leagueId,
+    );
+    notifyListeners();
+  }
+
+  Future<void> setHomeTeam(String teamId) async {
+    state.homeTeamId = teamId;
+    await leagueService.saveSelection(
+      association: state.selectedAssociation!,
+      leagueId: state.selectedLeagueId!,
+      homeTeamId: teamId,
+    );
+    notifyListeners();
+  }
+
+  Future<void> setAwayTeam(String teamId) async {
+    state.awayTeamId = teamId;
+    await leagueService.saveSelection(
+      association: state.selectedAssociation!,
+      leagueId: state.selectedLeagueId!,
+      awayTeamId: teamId,
+    );
     notifyListeners();
   }
 }
