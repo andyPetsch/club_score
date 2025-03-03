@@ -1,6 +1,5 @@
 // lib/services/league_service.dart
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
 import '../models/league.dart';
 import '../models/team.dart';
 

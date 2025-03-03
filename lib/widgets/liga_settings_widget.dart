@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../controllers/game_controller.dart';
 import '../models/league.dart';
 import '../models/team.dart';
-import '../services/league_service.dart';
 
 class LigaSettingsWidget extends StatefulWidget {
   final Function(bool)? onLigaModeChanged;

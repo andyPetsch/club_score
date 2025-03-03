@@ -53,7 +53,6 @@ class _PoolGameModalState extends State<PoolGameModal> {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final ColorScheme colorScheme = theme.colorScheme;
     final Color primaryColor = theme.primaryColor;
     final Color backgroundColor = theme.cardColor;
     final Color textColor = theme.textTheme.bodyLarge?.color ?? Colors.black;
