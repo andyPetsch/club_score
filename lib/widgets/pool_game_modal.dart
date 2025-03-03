@@ -211,6 +211,7 @@ class _PoolGameModalState extends State<PoolGameModal> {
                       const SizedBox(height: 18),
 
                       // Break Selection
+                      // Break Selection
                       Row(
                         children: [
                           Expanded(
@@ -403,38 +404,80 @@ class _PoolGameModalState extends State<PoolGameModal> {
     final themeExt = theme.extension<BilliardsThemeExtension>();
 
     final isSelected = selectedBreak == breakType;
+    final bool isLeagueTarget = isLeagueRace && breakType == 'alternating';
 
-    return ElevatedButton(
-      onPressed: () {
-        setState(() {
-          selectedBreak = breakType;
-        });
-      },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: isSelected
-            ? themeExt?.selectedItemBackground ?? primaryColor.withOpacity(0.2)
-            : cardColor,
-        foregroundColor: textColor,
-        padding: const EdgeInsets.symmetric(vertical: 18),
-        minimumSize: const Size(0, 80),
-        side: BorderSide(
-          color: isSelected
-              ? themeExt?.selectedItemBorder ?? primaryColor
-              : borderColor,
-          width: 3,
-        ),
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          fontSize: 24,
-          color: textColor,
-          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-        ),
+    return Container(
+      margin: EdgeInsets.only(top: 20),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  selectedBreak = breakType;
+                });
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: isSelected
+                    ? themeExt?.selectedItemBackground ??
+                        primaryColor.withOpacity(0.2)
+                    : cardColor,
+                foregroundColor: textColor,
+                padding: const EdgeInsets.symmetric(vertical: 18),
+                minimumSize: const Size(0, 80),
+                side: BorderSide(
+                  color: isLeagueTarget
+                      ? Colors.blue.shade700
+                      : (isSelected
+                          ? themeExt?.selectedItemBorder ?? primaryColor
+                          : borderColor),
+                  width: isLeagueTarget ? 4 : 3,
+                ),
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: Text(
+                label,
+                style: TextStyle(
+                  fontSize: 24,
+                  color: textColor,
+                  fontWeight: isSelected || isLeagueTarget
+                      ? FontWeight.bold
+                      : FontWeight.normal,
+                ),
+              ),
+            ),
+          ),
+
+          // League indicator badge
+          if (isLeagueTarget)
+            Positioned(
+              top: -20,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: Colors.blue.shade700,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    "⭐ Liga",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
