@@ -145,19 +145,22 @@ class FloatingControlPanel extends StatelessWidget {
       context: context,
       barrierDismissible: true,
       builder: (BuildContext context) {
-        return Dialog(
-          insetPadding: const EdgeInsets.all(10),
-          backgroundColor: Colors.transparent,
-          child: PoolGameModal(
-            onGameStart: (gameType, raceToWin, breakType) {
-              // Handle game start
-              gameController.handleNewGame({
-                'gameType': gameType,
-                'raceToWin': raceToWin,
-                'breakType': breakType
-              });
-              Navigator.of(context).pop();
-            },
+        return ChangeNotifierProvider.value(
+          value: gameController, // Pass the existing controller
+          child: Dialog(
+            insetPadding: const EdgeInsets.all(10),
+            backgroundColor: Colors.transparent,
+            child: PoolGameModal(
+              onGameStart: (gameType, raceToWin, breakType) {
+                // Handle game start
+                gameController.handleNewGame({
+                  'gameType': gameType,
+                  'raceToWin': raceToWin,
+                  'breakType': breakType
+                });
+                Navigator.of(context).pop();
+              },
+            ),
           ),
         );
       },

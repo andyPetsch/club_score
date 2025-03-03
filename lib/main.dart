@@ -5,8 +5,16 @@ import 'controllers/game_controller.dart';
 import 'screens/game_screen.dart';
 import 'theme/theme_provider.dart';
 import 'theme/app_themes.dart';
+import 'services/league_service.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final leagueService = LeagueService();
+  await leagueService.resetSettings();
+
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override

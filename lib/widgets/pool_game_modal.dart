@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import '../utils/svg_provider.dart';
 import '../theme/app_themes.dart';
+import 'package:provider/provider.dart';
+import '../controllers/game_controller.dart';
 
 const String CUSTOM_RACE = 'custom';
 
@@ -25,6 +27,9 @@ class _PoolGameModalState extends State<PoolGameModal> {
   String? selectedBreak;
   int? customRace;
   bool showCustomRace = false;
+  bool _leagueSettingsLoaded = false;
+  bool isLeagueRace = false;
+  int? leagueRaceValue;
 
   @override
   void initState() {
@@ -32,6 +37,17 @@ class _PoolGameModalState extends State<PoolGameModal> {
     selectedGameType = widget.initialGameType;
     selectedRace = null;
     selectedBreak = null;
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // Only load settings once
+    if (!_leagueSettingsLoaded) {
+      _loadLeagueSettings();
+      _leagueSettingsLoaded = true;
+    }
   }
 
   @override
@@ -250,6 +266,7 @@ class _PoolGameModalState extends State<PoolGameModal> {
       onTap: () {
         setState(() {
           selectedGameType = gameType;
+          _loadLeagueSettings();
         });
       },
       child: Container(
@@ -297,44 +314,81 @@ class _PoolGameModalState extends State<PoolGameModal> {
 
     final isCustom = race == CUSTOM_RACE;
     final isSelected = race == selectedRace || (isCustom && showCustomRace);
+    final bool isLeagueTarget = isLeagueRace && race == leagueRaceValue;
 
-    return ElevatedButton(
-      onPressed: () {
-        setState(() {
-          if (isCustom) {
-            showCustomRace = true;
-            selectedRace = customRace;
-          } else {
-            showCustomRace = false;
-            selectedRace = race;
-          }
-        });
-      },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: isSelected
-            ? themeExt?.selectedItemBackground ?? primaryColor.withOpacity(0.2)
-            : cardColor,
-        foregroundColor: textColor,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        minimumSize: const Size(70, 70),
-        side: BorderSide(
-          color: isSelected
-              ? themeExt?.selectedItemBorder ?? primaryColor
-              : borderColor,
-          width: 3,
-        ),
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-      ),
-      child: Text(
-        isCustom ? 'Benutzerdefiniert' : race.toString(),
-        style: TextStyle(
-          fontSize: 24,
-          color: textColor,
-          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-        ),
+    return Container(
+      margin: EdgeInsets.only(
+          top: 20, right: 0), // to allow for league target indicator
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                if (isCustom) {
+                  showCustomRace = true;
+                  selectedRace = customRace;
+                } else {
+                  showCustomRace = false;
+                  selectedRace = race;
+                }
+              });
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: isSelected
+                  ? themeExt?.selectedItemBackground ??
+                      primaryColor.withOpacity(0.2)
+                  : cardColor,
+              foregroundColor: textColor,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              minimumSize: const Size(70, 70),
+              side: BorderSide(
+                color: isLeagueTarget
+                    ? Colors.blue.shade700
+                    : (isSelected
+                        ? themeExt?.selectedItemBorder ?? primaryColor
+                        : borderColor),
+                width: isLeagueTarget ? 4 : 3,
+              ),
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: Text(
+              isCustom ? 'Benutzerdefiniert' : race.toString(),
+              style: TextStyle(
+                fontSize: 24,
+                color: textColor,
+                fontWeight: isSelected || isLeagueTarget
+                    ? FontWeight.bold
+                    : FontWeight.normal,
+              ),
+            ),
+          ),
+
+          // League indicator badge
+          if (isLeagueTarget)
+            Positioned(
+              top: -20,
+              right: 0,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade700,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  "⭐ Liga",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -399,6 +453,38 @@ class _PoolGameModalState extends State<PoolGameModal> {
         selectedRace!,
         selectedBreak!,
       );
+    }
+  }
+
+  Future<void> _loadLeagueSettings() async {
+    final gameController = Provider.of<GameController>(context, listen: false);
+
+    if (gameController.state.selectedAssociation != null &&
+        gameController.state.selectedLeagueId != null) {
+      // Set the selected game type if not already set
+      selectedGameType = selectedGameType ?? '9ball';
+
+      // Get targets for the selected game type
+      final targets = await gameController.leagueService.getTargets(
+        gameController.state.selectedAssociation!,
+        gameController.state.selectedLeagueId!,
+        selectedGameType!,
+      );
+
+      if (targets != null) {
+        setState(() {
+          if (selectedGameType == '141' && targets is Map) {
+            leagueRaceValue = targets['points'];
+            selectedRace = leagueRaceValue;
+          } else if (targets is int) {
+            leagueRaceValue = targets;
+            selectedRace = leagueRaceValue;
+          }
+
+          isLeagueRace = true;
+          selectedBreak = 'alternating';
+        });
+      }
     }
   }
 }

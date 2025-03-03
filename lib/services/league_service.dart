@@ -183,4 +183,12 @@ class LeagueService {
     // If team has a logo, return it, otherwise generate placeholder
     return team.logo ?? generatePlaceholderSvg(getTeamInitials(team.name));
   }
+
+  Future<void> resetSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('selected_association');
+    await prefs.remove('selected_league');
+    await prefs.remove('selected_home_team');
+    await prefs.remove('selected_away_team');
+  }
 }
