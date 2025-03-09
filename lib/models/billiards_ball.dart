@@ -36,7 +36,7 @@ class BilliardsBall {
 
   Widget build() {
     return Opacity(
-      opacity: isActive ? 1.0 : 0.5,
+      opacity: isActive ? 1.0 : 0.4,
       child: _buildBallSvg(),
     );
   }
