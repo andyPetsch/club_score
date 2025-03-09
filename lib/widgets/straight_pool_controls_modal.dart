@@ -78,7 +78,7 @@ class _StraightPoolControlsModalState extends State<StraightPoolControlsModal> {
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   child: Text(
-                    '${state.maxInnings != null ? "${widget.currentInning}. Aufnahme von ${state.maxInnings}" : widget.currentInning}. Aufnahme',
+                    '${state.maxInnings != null ? "${widget.currentInning}. Aufnahme von ${state.maxInnings}" : "${widget.currentInning}."} Aufnahme',
                     style: TextStyle(
                       fontSize: 16.0,
                       fontWeight: FontWeight.w500,
