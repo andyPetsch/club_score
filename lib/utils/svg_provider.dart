@@ -1,6 +1,7 @@
 // lib/utils/svg_provider.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../models/billiards_ball.dart';
 
 /// Provides SVG assets for the billiards app
 class BilliardsSVG {
@@ -31,8 +32,19 @@ class BilliardsSVG {
   static const String iconFoulX = 'assets/svg/icon_foul_x.svg';
   static const String iconWarning = 'assets/svg/icon_warning.svg';
 
-  /// Get a ball SVG widget by number
+  /// Get a ball SVG widget by number - replaced with template-based implementation
   static Widget getBall(int number, {double size = 40, bool inactive = false}) {
+    // Use new BilliardsBall implementation
+    return BilliardsBall(
+      number: number,
+      isActive: !inactive,
+      size: size,
+    ).build();
+  }
+
+  /// Legacy SVG file-based implementation - kept for backward compatibility
+  static Widget getLegacyBall(int number,
+      {double size = 40, bool inactive = false}) {
     String assetPath;
 
     switch (number) {
@@ -88,13 +100,15 @@ class BilliardsSVG {
         assetPath = ballCue;
     }
 
-    return SvgPicture.asset(
-      assetPath,
-      width: size,
-      height: size,
-      colorFilter: inactive
-          ? const ColorFilter.mode(Colors.grey, BlendMode.saturation)
-          : null,
+    // Instead of applying a filter to the entire SVG,
+    // wrap it in an opacity widget to preserve transparency
+    return Opacity(
+      opacity: inactive ? 0.5 : 1.0,
+      child: SvgPicture.asset(
+        assetPath,
+        width: size,
+        height: size,
+      ),
     );
   }
 
@@ -137,7 +151,3 @@ class BilliardsSVG {
     );
   }
 }
-
-// Usage example:
-// BilliardsSVG.getBall(8, size: 60)
-// BilliardsSVG.getIcon('undo', size: 30, color: Colors.blue)

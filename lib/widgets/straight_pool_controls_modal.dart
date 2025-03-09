@@ -78,7 +78,7 @@ class _StraightPoolControlsModalState extends State<StraightPoolControlsModal> {
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   child: Text(
-                    '${state.maxInnings != null ? "${widget.currentInning}/${state.maxInnings}" : widget.currentInning}. Aufnahme',
+                    '${state.maxInnings != null ? "${widget.currentInning}. Aufnahme von ${state.maxInnings}" : widget.currentInning}. Aufnahme',
                     style: TextStyle(
                       fontSize: 16.0,
                       fontWeight: FontWeight.w500,
@@ -107,58 +107,7 @@ class _StraightPoolControlsModalState extends State<StraightPoolControlsModal> {
                 ),
               ],
             ),
-            const SizedBox(height: 24.0),
 
-            // Remaining Balls Grid
-            Text(
-              'Verbleibende Kugeln auf dem Tisch',
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.w500,
-                color: theme.textTheme.bodyLarge?.color?.withOpacity(0.6),
-              ),
-            ),
-            const SizedBox(height: 16.0),
-            // Grid of balls
-            Container(
-              padding: const EdgeInsets.all(12.0),
-              decoration: BoxDecoration(
-                color: themeExt?.scoreBackgroundColor ?? Colors.grey[200]!,
-                borderRadius: BorderRadius.circular(12.0),
-              ),
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  final availableWidth = constraints.maxWidth;
-                  final ballSize =
-                      (availableWidth / 7) - 10; // 7 balls per row with spacing
-
-                  return Wrap(
-                    spacing: 8.0,
-                    runSpacing: 8.0,
-                    alignment: WrapAlignment.center,
-                    children: List.generate(14, (index) {
-                      final ballNumber = index + 2; // Balls from 2 to 15
-                      final isInactive = ballNumber > 15;
-
-                      return GestureDetector(
-                        onTap: isInactive
-                            ? null
-                            : () => _handleBallTap(ballNumber),
-                        child: Container(
-                          width: ballSize,
-                          height: ballSize,
-                          child: BilliardsSVG.getBall(
-                            ballNumber,
-                            size: ballSize,
-                            inactive: isInactive,
-                          ),
-                        ),
-                      );
-                    }),
-                  );
-                },
-              ),
-            ),
             const SizedBox(height: 24.0),
 
             // Action buttons (Rerack and Foul toggle)
@@ -231,6 +180,60 @@ class _StraightPoolControlsModalState extends State<StraightPoolControlsModal> {
                   ),
                 ),
               ],
+            ),
+
+            const SizedBox(height: 24.0),
+
+            // Remaining Balls Grid
+            Text(
+              'Verbleibende Kugeln auf dem Tisch',
+              style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.w500,
+                color: theme.textTheme.bodyLarge?.color?.withOpacity(0.6),
+              ),
+            ),
+            const SizedBox(height: 16.0),
+            // Grid of balls
+            Container(
+              padding: const EdgeInsets.all(12.0),
+              decoration: BoxDecoration(
+                color: themeExt?.scoreBackgroundColor ?? Colors.grey[200]!,
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final availableWidth = constraints.maxWidth;
+                  final ballSize =
+                      (availableWidth / 7) - 10; // 7 balls per row with spacing
+
+                  return Wrap(
+                    spacing: 8.0,
+                    runSpacing: 8.0,
+                    alignment: WrapAlignment.center,
+                    children: List.generate(14, (index) {
+                      final ballNumber = index + 2; // Balls from 2 to 15
+                      // Check if the ball is available based on ballsOnTable
+                      final isInactive = ballNumber > state.ballsOnTable;
+
+                      return GestureDetector(
+                        onTap: isInactive
+                            ? null
+                            : () => _handleBallTap(ballNumber),
+                        child: Container(
+                          width: ballSize,
+                          height: ballSize,
+                          child: BilliardsSVG.getBall(
+                            ballNumber,
+                            size: ballSize,
+                            inactive: isInactive,
+                          ),
+                        ),
+                      );
+                    }),
+                  );
+                },
+              ),
             ),
           ],
         ),
