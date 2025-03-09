@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../controllers/game_controller.dart';
 import '../theme/app_themes.dart';
+import '../widgets/straight_pool_controls_modal.dart';
 
 class ScoreDisplay extends StatefulWidget {
   final int playerIndex;
@@ -55,10 +56,29 @@ class _ScoreDisplayState extends State<ScoreDisplay> {
 
     return Expanded(
       child: GestureDetector(
-        onTap: () => gameController.handleAction({
-          'type': 'SCORE',
-          'player': widget.playerIndex + 1,
-        }),
+        onTap: () {
+          final gameType = gameController.state.gameType;
+          if (gameType == '141' &&
+              widget.playerIndex + 1 == gameController.state.activePlayer) {
+            // Show straight pool controls for active player
+            showDialog(
+              context: context,
+              builder: (context) => StraightPoolControlsModal(
+                activePlayerName:
+                    gameController.state.playerNames[widget.playerIndex],
+                currentInning:
+                    gameController.state.innings[widget.playerIndex] + 1,
+                currentBreak: gameController.state.currentBreak ?? 0,
+              ),
+            );
+          } else {
+            // Regular score increment for other game types
+            gameController.handleAction({
+              'type': 'SCORE',
+              'player': widget.playerIndex + 1,
+            });
+          }
+        },
         child: Container(
           decoration: BoxDecoration(
             color: cardBackground,

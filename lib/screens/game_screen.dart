@@ -7,6 +7,7 @@ import '../widgets/win_screen.dart';
 import '../widgets/game_selection_modal.dart';
 import '../widgets/pool_game_modal.dart';
 import '../widgets/floating_control_panel.dart';
+import '../widgets/straight_pool_modal.dart';
 
 class GameScreen extends StatelessWidget {
   const GameScreen({Key? key}) : super(key: key);
@@ -67,7 +68,7 @@ class GameScreen extends StatelessWidget {
             if (gameType == 'pool') {
               _showPoolGameModal(context);
             } else if (gameType == '141') {
-              // to be implemented: _showStraightPoolModal(context);
+              _showStraightPoolModal(context);
             }
           },
         );
@@ -93,6 +94,33 @@ class GameScreen extends StatelessWidget {
                 'gameType': gameType,
                 'raceToWin': raceToWin,
                 'breakType': breakType
+              });
+              Navigator.of(context).pop();
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  void _showStraightPoolModal(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return Dialog(
+          insetPadding: const EdgeInsets.all(10),
+          backgroundColor: Colors.transparent,
+          child: StraightPoolModal(
+            onGameStart: (points, innings) {
+              // Get the GameController from provider
+              final gameController =
+                  Provider.of<GameController>(context, listen: false);
+              // Handle game start
+              gameController.handleNewGame({
+                'gameType': '141',
+                'raceToWin': points,
+                'maxInnings': innings,
               });
               Navigator.of(context).pop();
             },

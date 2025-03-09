@@ -66,8 +66,8 @@ class _GameSelectionModalState extends State<GameSelectionModal> {
                   _buildGameModeButton(
                     context,
                     title: '14.1 endlos',
-                    isDisabled: true,
-                    onTap: () {}, // Placeholder
+                    isDisabled: false,
+                    onTap: () => widget.onGameSelected('141'),
                   ),
                 ],
               ),

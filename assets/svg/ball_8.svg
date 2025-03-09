@@ -1,4 +1,4 @@
-<!-- assets/svg/ball_8.svg (Black Solid) -->
+<!-- assets/svg/ball_8.svg -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <defs>
     <filter id="ball-shadow" x="-20%" y="-20%" width="200%" height="200%">
