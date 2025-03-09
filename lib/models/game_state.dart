@@ -15,6 +15,9 @@ class GameState {
   String? selectedLeagueId;
   String? homeTeamId;
   String? awayTeamId;
+  int ballsOnTable;
+  int? currentBreak;
+  int? maxInnings;
 
   GameState({
     required this.playerNames,
@@ -32,6 +35,9 @@ class GameState {
     this.selectedLeagueId,
     this.homeTeamId,
     this.awayTeamId,
+    this.ballsOnTable = 15,
+    this.currentBreak,
+    this.maxInnings,
   });
 
   // Create a default state
@@ -66,6 +72,9 @@ class GameState {
       selectedLeagueId: selectedLeagueId,
       homeTeamId: homeTeamId,
       awayTeamId: awayTeamId,
+      ballsOnTable: ballsOnTable,
+      currentBreak: currentBreak,
+      maxInnings: maxInnings,
     );
   }
 }

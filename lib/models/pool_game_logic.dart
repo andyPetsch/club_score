@@ -1,7 +1,8 @@
 // lib/models/pool_game_logic.dart
 import 'game_state.dart';
+import 'game_logic.dart';
 
-class PoolGameLogic {
+class PoolGameLogic implements GameLogic {
   late GameState state;
 
   void setStateContext(GameState state) {

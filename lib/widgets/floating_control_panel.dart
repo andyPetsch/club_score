@@ -6,6 +6,7 @@ import '../utils/svg_provider.dart';
 import '../widgets/game_selection_modal.dart';
 import '../widgets/pool_game_modal.dart';
 import '../theme/theme_provider.dart';
+import '../widgets/straight_pool_modal.dart';
 
 class FloatingControlPanel extends StatelessWidget {
   const FloatingControlPanel({Key? key}) : super(key: key);
@@ -131,7 +132,7 @@ class FloatingControlPanel extends StatelessWidget {
             if (gameType == 'pool') {
               _showPoolGameModal(context, gameController);
             } else if (gameType == '141') {
-              // to be implemented: _showStraightPoolModal(context);
+              _showStraightPoolModal(context, gameController);
             }
           },
         );
@@ -157,6 +158,34 @@ class FloatingControlPanel extends StatelessWidget {
                   'gameType': gameType,
                   'raceToWin': raceToWin,
                   'breakType': breakType
+                });
+                Navigator.of(context).pop();
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showStraightPoolModal(
+      BuildContext context, GameController gameController) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return ChangeNotifierProvider.value(
+          value: gameController, // Pass the existing controller
+          child: Dialog(
+            insetPadding: const EdgeInsets.all(10),
+            backgroundColor: Colors.transparent,
+            child: StraightPoolModal(
+              onGameStart: (points, innings) {
+                // Handle game start
+                gameController.handleNewGame({
+                  'gameType': '141',
+                  'raceToWin': points,
+                  'maxInnings': innings,
                 });
                 Navigator.of(context).pop();
               },
