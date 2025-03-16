@@ -30,7 +30,7 @@ class FoulIndicator extends StatelessWidget {
             (_) => Padding(
               padding: EdgeInsets.symmetric(horizontal: 4),
               child:
-                  BilliardsSVG.getIcon('foul_x', size: 24, color: Colors.red),
+                  BilliardsSVG.getIcon('foul_x', size: 48, color: Colors.red),
             ),
           ),
         ),
@@ -48,7 +48,7 @@ class FoulIndicator extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                BilliardsSVG.getIcon('warning', size: 16, color: Colors.orange),
+                BilliardsSVG.getIcon('warning', size: 48, color: Colors.orange),
                 SizedBox(width: 4),
                 Text(
                   'Nächstes Foul: -15',
